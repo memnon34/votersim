@@ -1,10 +1,7 @@
-#edit the list function so it iterates over the arrays and returns name=>view for 
-#voters, and name=>party for politicians. 
-#create the default lists to populate the array in case players are lazy.
 #start working on the campaign mechanic.
 #Get to the voting mechanic. 
 #remember TDD! It has helped a lot. 
-
+#in create politician, limit creation to 1 politican of each party. 
 require "./votersim.rb"
 require 'minitest/autorun'
 include Votersim
@@ -45,7 +42,7 @@ class World#the way I have this, do I need a world class? Keep for now.
     when "6"
       #this should start the election. 
     when "7"
-      #this should populate the voter and politican arrays.
+      populate_arrays
     else
       puts "I hope you're not trying to break my code...\n"
       puts "Please make a valid selection! Here's the menu again.\n\n"
@@ -80,6 +77,154 @@ class World#the way I have this, do I need a world class? Keep for now.
     puts "And his/her political party is: #{capitalize_each_word(current_politician.party)} "
   end
 
+  def run_campaign
+    #each politcian visits each voter
+    #if the voter is the same as the politician, he should vote for himself.
+    #if the voter is another politician, he should make a nasty coment about the other one. 
+    #voters should make a comment about whether the politician has swayed him or her. 
+    candidate_array = Politician.candidates
+    voter_array = Voter.voters
+
+    candidate_array.each do |candidates|
+      puts "My name is #{capitalize_each_word(candidates.name)}, and you should vote for me because my #{candidates.view} policies are good for America!"
+      puts candidates.name 
+      if candidates.party == "republican"
+        voter_array.each do |responder|
+          case responder.view
+          when "socialist"
+            chance = rand(101)
+            if chance >= 90
+              responder.view = "conservative"
+              puts "I'm #{responder.name}, and #{candidates.name} convinced me to change my political view to: #{responder.view}!"
+            else
+              puts "I'm #{responder.name}, and #{candidates.name} didn't change my mind. I'm still hold my #{responder.view} views!"
+            end
+          when "liberal"
+            chance = rand(101)
+            if chance >= 75
+              responder.view = "conservative"
+              puts "I'm #{responder.name}, and #{candidates.name} convinced me to change my political view to: #{responder.view}!"
+            else
+              puts "I'm #{responder.name}, and #{candidates.name} didn't change my mind. I'm still hold my #{responder.view} views!"
+            end
+          when "neutral"
+            chance = rand(101)
+            if chance >= 50
+              responder.view = "conservative"
+              puts "I'm #{responder.name}, and #{candidates.name} convinced me to change my political view to: #{responder.view}!"
+            else
+              puts "I'm #{responder.name}, and #{candidates.name} didn't change my mind. I'm still hold my #{responder.view} views!"
+            end
+          when "conservative"
+            chance = rand(101)
+            if chance >= 25
+              puts "I'm #{responder.name}, and #{candidates.name} is still my candidate!"
+            else
+              responder.view = "neutral"
+              puts "I'm #{responder.name}, and I'm not too sure about #{candidates.name} anymore. My views are now: #{responder.view}!"
+            end
+          when "tea party"
+            chance = rand(101)
+            if chance >= 10
+              puts "I'm #{responder.name}, and #{candidates.name} is still my candidate!"
+            else
+              responder.view = "neutral"
+              puts "I'm #{responder.name}, and I'm not too sure about #{candidates.name} anymore. My views are now: #{responder.view}!"
+            end
+          end #end case statement
+        end #end voter.each loop
+      elsif candidates.party == "democrat"
+        voter_array.each do |responder|
+          case responder.view
+          when "socialist"
+            chance = rand(101)
+            if chance >= 10
+              puts "I'm #{responder.name}, and #{candidates.name} is still my candidate!"
+            else
+              responder.view = "neutral"
+              puts "I'm #{responder.name}, and I'm not too sure about #{candidates.name} anymore. My views are now: #{responder.view}!"
+            end
+          when "liberal"
+            chance = rand(101)
+            if chance >= 25
+              puts "I'm #{responder.name}, and #{candidates.name} is still my candidate!"
+            else
+              responder.view = "neutral"
+              puts "I'm #{responder.name}, and I'm not too sure about #{candidates.name} anymore. My views are now: #{responder.view}!"
+            end
+          when "neutral"
+            chance = rand(101)
+            if chance >= 50
+              responder.view = "liberal"
+              puts "I'm #{responder.name}, and #{candidates.name} convinced me to change my political view to: #{responder.view}!"
+            else
+              puts "I'm #{responder.name}, and #{candidates.name} didn't change my mind. I'm still hold my #{responder.view} views!"
+            end
+          when "conservative"
+            chance = rand(101)
+            if chance >= 75
+              responder.view = "liberal"
+              puts "I'm #{responder.name}, and #{candidates.name} convinced me to change my political view to: #{responder.view}!"
+            else
+              puts "I'm #{responder.name}, and #{candidates.name} didn't change my mind. I'm still hold my #{responder.view} views!"
+            end
+          when "tea party"
+            chance = rand(101)
+            if chance >= 90
+              responder.view = "liberal"
+              puts "I'm #{responder.name}, and #{candidates.name} convinced me to change my political view to: #{responder.view}!"
+            else
+              puts "I'm #{responder.name}, and #{candidates.name} didn't change my mind. I'm still hold my #{responder.view} views!"
+            end
+          end#end case statemetn
+        end#end voter each loop
+      else #independent candidate
+        voter_array.each do |responder|
+          case responder.view
+          when "neutral"
+            chance = rand(101)
+            if chance >= 10
+              puts "I'm #{responder.name}, and #{candidates.name} is my candidate!"
+            else
+              puts "I'm #{responder.name}. #{candidates.name} hasn't quite convinced me, but my views are still: #{responder.view}!"
+            end
+          when "liberal"
+            chance = rand(101)
+            if chance >= 75
+              responder.view = "neutral"
+              puts "I'm #{responder.name}, and #{candidates.name} convinced me to change my political view to: #{responder.view}!"
+            else
+              puts "I'm #{responder.name}. My views are still: #{responder.view}!"
+            end
+          when "socialist"
+            chance = rand(101)
+            if chance >= 90
+              responder.view = "neutral"
+              puts "I'm #{responder.name}, and #{candidates.name} convinced me to change my political view to: #{responder.view}!"
+            else
+              puts "I'm #{responder.name}. My views are still: #{responder.view}!"
+            end
+          when "conservative"
+            chance = rand(101)
+            if chance >= 75
+              responder.view = "neutral"
+              puts "I'm #{responder.name}, and #{candidates.name} convinced me to change my political view to: #{responder.view}!"
+            else
+              puts "I'm #{responder.name}. My views are still: #{responder.view}!"
+            end
+          when "tea party"
+            chance = rand(101)
+            if chance >= 90
+              responder.view = "neutral"
+              puts "I'm #{responder.name}, and #{candidates.name} convinced me to change my political view to: #{responder.view}!"
+            else
+              puts "I'm #{responder.name}. My views are still: #{responder.view}!"
+            end
+          end#end case statemetn
+        end#end voter each loop
+      end#end if/else based on party
+    end#end politician loop
+  end#end run campaign method
 end
 
 
@@ -93,6 +238,10 @@ class Voter
     @@voter_array << self
   end
 
+  def self.voters 
+    @@voter_array
+  end
+
   def update_voter(name)
     @@voter_array.each do |voters| 
       if voters.name == name
@@ -104,7 +253,16 @@ class Voter
   end
 
   def self.list_voters
-    @@voter_array
+    puts "Here is the list of voters. (Remember: politicians can vote too!)"
+    @@voter_array.each do |voters|
+      if voters.name.length < 9
+        puts "\tVoter: #{capitalize_each_word(voters.name)}\t\t\t\tView: #{capitalize_each_word(voters.view)}" 
+      elsif voters.name.length > 12
+        puts "\tVoter: #{capitalize_each_word(voters.name)}\t\tView: #{capitalize_each_word(voters.view)}" 
+      else
+        puts "\tVoter: #{capitalize_each_word(voters.name)}\t\t\tView: #{capitalize_each_word(voters.view)}" 
+      end
+    end
   end
 
 end
@@ -129,18 +287,29 @@ class Politician < Voter
     @@politician_array << self
   end
 
-  def self.list_politicians
+  def self.candidates
     @@politician_array
   end
 
+  def self.list_politicians
+    puts "Here is the list of politicians:"
+    @@politician_array.each do |politicians|
+      if politicians.name.length < 9
+        puts "\tPolitician: #{capitalize_each_word(politicians.name)}\t\t\tParty: #{capitalize_each_word(politicians.party)}" 
+      elsif politicians.name.length > 12
+        puts "\tPolitician: #{capitalize_each_word(politicians.name)}\t\tParty: #{capitalize_each_word(politicians.party)}" 
+      else
+        puts "\tPolitician: #{capitalize_each_word(politicians.name)}\t\t\tParty: #{capitalize_each_word(politicians.party)}" 
+      end
+    end
+  end
 
 end
 
 
 class VoterSimTest < Minitest::Test
-  # world = World.new
-  # danny = Voter.new("Danny", "liberal")
-  # jeb = Politician.new("Jeb Bush", "conservative")
+  world = World.new
+  populate_arrays
 
   #I need to create a main menu.
   # world.main_menu #done
@@ -149,11 +318,11 @@ class VoterSimTest < Minitest::Test
   # p "This is a list of politicians: "
   # p Politician.get_politicians
   # puts ""
-  
+
   #I need a list of voters #done!
   # p "This is a list of voters: "
-  # p Voter.get_voters
-  # puts ""
+  Voter.list_voters
+  puts ""
 
   #I need to create voters
   # world.create_voter #done!
@@ -165,11 +334,12 @@ class VoterSimTest < Minitest::Test
   #I need to update voters & politicians
   # danny.update_voter(danny.name)
   # puts ""
-  p Voter.list_voters
+  # p Voter.list_voters
 
 
-  puts ""
-  p Politician.list_politicians
+  Politician.list_politicians
+
+  world.run_campaign
 
 
 end
