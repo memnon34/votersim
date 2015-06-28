@@ -1,7 +1,5 @@
 
-#in create politician, limit creation to 1 politican of each party. 
 require "./votersim.rb"
-# require 'minitest/autorun'
 include Votersim
 
 class World#the way I have this, do I need a world class? Keep for now.
@@ -9,9 +7,8 @@ class World#the way I have this, do I need a world class? Keep for now.
   def initialize
   end
 
+  #main game menu. User ends up here after each method terminates. 
   def self.main_menu
-    #put the game intro somewhere else. Keep this just for the menu options.
-    # puts "Let's kick off the 2016 election! What would you like to do first?\n\n"
     puts "\nChoose from the following options: "
     puts "\t☞\tTo create a voter, press 1."
     puts "\t☞\tTo create a politician, press 2"
@@ -25,6 +22,7 @@ class World#the way I have this, do I need a world class? Keep for now.
     menu_selection(prompt_and_get)
   end
 
+  #determines the method to run after main menu. 
   def self.menu_selection(num)
     case num
     when "1"
@@ -72,13 +70,13 @@ class World#the way I have this, do I need a world class? Keep for now.
   end
 
   def self.create_politician
-    politician_list_length_checker
+    politician_list_length_checker #method stops this process if 3 politicians already exist.
 
     candidate_array = Politician.candidates #this allows code to check entries against existing politicians.
 
     puts "\nYou can create one Democrat, one Republican, and one Independent."
     puts "Politician name?"
-    name = prompt_and_get.downcase 
+    name = prompt_and_get.downcase #my method for prompting and turning downcasing user input.
 
     politician_name_checker_create(name) #checks to see if the name has more than 0 characters.
     
@@ -88,9 +86,9 @@ class World#the way I have this, do I need a world class? Keep for now.
     puts "\n\t*Tip: \tLiberals and Socialists will become Democrats.\n\t\tTea Party & Conservatives will be Republicans.\n\t\tNeutral will run for the Independents."
     
     view = prompt_and_get.downcase
-    view_checker(view)
+    view_checker(view) #checks for valid input
 
-    party_checker(view) if candidate_array.length > 0 
+    party_checker(view) if candidate_array.length > 0  #if a politician already exists, this will make sure the new one can't join the same party
 
     current_politician = Politician.new(name, view)
     puts "Success!"
@@ -102,10 +100,13 @@ class World#the way I have this, do I need a world class? Keep for now.
     main_menu
   end
 
+  #sends politicians to debate each other, then to campaign for voters.
   def self.run_campaign
     candidate_array = Politician.candidates
     voter_array = Voter.voters
 
+    #this the debate section. Candidates say a speech, goes through all voters, and only politicians respond. 
+    #loop within a loop! First time I can do that successfully :)
     puts "\nFirst, the candidates will debate!"
     candidate_array.each do |candidates|
       puts "\nI'm #{capitalize_each_word(candidates.name)}, and I would like you to join my party and support my candidacy."
@@ -119,12 +120,16 @@ class World#the way I have this, do I need a world class? Keep for now.
       end
     end
 
+    #this deletes the politicians from the voter array for the campaign mechanic.
     voter_array = voter_array - candidate_array
 
+    #loopin to talk to each voter.
     puts "\nNow let's send the candidates on the campaign trail!"
     candidate_array.each do |candidates|
       puts "\nMy name is #{capitalize_each_word(candidates.name)}, and you should vote for me because my #{candidates.view} policies are good for America!\n\n"
 
+      #case statement checks to see if voters' minds are changed based on the percentages given in the assignment.
+      #I added an independent candidate, and his stats I played with to reflect what I assumed would align with reality.       
       if candidates.party == "republican"
         voter_array.each do |responder|
           case responder.view
@@ -170,6 +175,7 @@ class World#the way I have this, do I need a world class? Keep for now.
             end
           end #end case statement
         end #end voter.each loop
+
       elsif candidates.party == "democrat"
         voter_array.each do |responder|
           case responder.view
@@ -215,6 +221,7 @@ class World#the way I have this, do I need a world class? Keep for now.
             end
           end#end case statemetn
         end#end voter each loop
+      
       else #independent candidate
         voter_array.each do |responder|
           case responder.view
@@ -262,13 +269,17 @@ class World#the way I have this, do I need a world class? Keep for now.
       end#end if/else based on party
     end#end politician loop
 
+    #this sends them straight to the election. No need to go back to the main menu after the campaign...
+    #though I guess technically you could add more stuff and campaign again? Maybe that's work adding?
     puts "\nThe campaign season has ended, and the voters have solidified their views."
     puts "The only thing left to do is start the election! Press enter to continue."
     prompt_and_get 
     run_election
   end#end run campaign method
 
+  #runs the election
   def self.run_election
+    #to tally votes
     democrat_votes = 0
     republican_votes = 0
     independent_votes = 0
@@ -277,7 +288,9 @@ class World#the way I have this, do I need a world class? Keep for now.
 
     puts "\nOkay! Voters, hit the ballot boxes!!!\n\n"
 
-
+    #I was going to get fancy and put in another element of chance here to reflect voters' changing their 
+    #minds at the last minute when they enter the ballot boxes...but I ran out of energy. The decision 
+    #mechanic happens in campaign, and 
     voter_array.each do |voters|
       if voters.is_a? Politician
         case voters.party
