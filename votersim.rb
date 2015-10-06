@@ -1,25 +1,27 @@
 module Votersim
     #for user input
-  def prompt_and_get
-    print ">  "
-    STDIN.gets.chomp!
-  end
+    def prompt_and_get
+      print ">  "
+      STDIN.gets.chomp!
+    end
 
-  def capitalize_each_word(words)
-    words.split.map(&:capitalize).join(' ')
-  end
+    def capitalize_each_word(words)
+      words.split.map(&:capitalize).join(' ')
+    end
 
-  def populate_voter_array
-    Voter.new("Mike Garcia", "socialist")
-    Voter.new("Roberto Perez", "tea party")
-    Voter.new("Andrew Velo", "conservative")
-    Voter.new("Sonia Gala", "liberal")
-    Voter.new("Alirio Fenton", "neutral")
-    Voter.new("Dennis Linus", "liberal")
-    Voter.new("Cheryl Flint", "conservative")
-    Voter.new("Joana Karma", "neutral")
-    Voter.new("Harold Miner", "neutral")
-    Voter.new("Luiza Felipe", "neutral")
+    def populate_voter_array
+      voters = [["Mike Garcia", "socialist"],
+        ["Roberto Perez", "tea party"],
+        ["Andrew Velo", "conservative"],
+        ["Sonia Gala", "liberal"],
+        ["Alirio Fenton", "neutral"],
+        ["Dennis Linus", "liberal"],
+        ["Cheryl Flint", "conservative"],
+        ["Joana Karma", "neutral"],
+        ["Harold Miner", "neutral"],
+        ["Luiza Felipe", "neutral"],
+      ]
+    voters.each{|v| Voter.new *v }
     puts "\n\tDefault voters have been added!"
     populate_politician_array
   end 
@@ -101,7 +103,7 @@ module Votersim
   def politician_name_checker_update(string)### not working. 
     # candidate_array = Politician.candidates
     search_keys = []
-  
+
     
     if string.length < 1
       puts "Please enter a valid name."
@@ -111,7 +113,7 @@ module Votersim
     Politician.candidates.each do |search| 
       search_keys << search.name
     end
-      
+
     if search_keys.include?(string)
       return
     else 
@@ -155,7 +157,7 @@ module Votersim
 
   #checks if there is already one candidate from party. 
   def party_checker(view)
-    
+
 
     candidate_array = Politician.candidates
     #looping through to determine if a politician of that party exits
@@ -194,7 +196,7 @@ module Votersim
   ####if it's the candidate from the same party. 
 
   # def update_party_checker(view) # needs to be fixed.
-    
+
   #   candidate_array = Politician.candidates
   #   #looping through to determine if a politician of that party exits
   #   candidate_array.each do |search|
@@ -236,7 +238,7 @@ module Votersim
 
 
   def update_party_checker(name, view) # needs to be fixed.
-    
+
     candidate_array = Politician.candidates #looping through to determine if a politician of that party exits
     
     if view == "liberal" || view == "socialist"
